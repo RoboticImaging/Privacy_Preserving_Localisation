@@ -1,4 +1,4 @@
-function vec = slideMask1D(img,mask,isRowSlide)
+function [vec,newImg] = slideMask1D(img,mask,isRowSlide)
     % slide mask over the img rows (isRowSlide = true) or columns (isRowSlide = false)
     % and max hold over the loop, returning in vector of size(img,1) or
     % size(img,2)
@@ -16,6 +16,8 @@ function vec = slideMask1D(img,mask,isRowSlide)
                 
                 % sum of products
                 maskedValue = sum(mask.values.*smallerImg,'all');
+                
+                newImg(i,j) = maskedValue;
                 
                 % max hold
                 if maskedValue > vec(i)
