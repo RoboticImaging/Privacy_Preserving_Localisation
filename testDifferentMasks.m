@@ -52,6 +52,30 @@ for imgIdx = 1:length(fnames)
     plot(max(convs,[],1));
 end
 
-              
+
+%% run disks of different sizes
+
+radii = [1,2,3];
+
+for radIdx = 1:length(radii)
+    mask.values = fspecial('disk',radii(radIdx));
+    convs = conv2(img, mask.values, 'same');
+    
+    figure(20)
+    hold on
+    plot(max(convs,[],2));
+
+    figure(21)
+    hold on
+    plot(max(convs,[],1));
+    
+    
+    figure(22)
+    subplot(1,length(radii),radIdx)
+    imagesc(convs);
+    axis image
+end
+figure(21)
+legend('1','2','3');
               
               

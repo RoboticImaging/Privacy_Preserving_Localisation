@@ -28,7 +28,7 @@ function demo()
     
     % Nordland spring dataset
     ds.name = 'spring';
-    ds.imagePath = '../datasets/nordland/64x32-grayscale-1fps/spring';    
+    ds.imagePath = '../SeqSLAMdatasets/nordland/64x32-grayscale-1fps/spring';    
     ds.prefix='images-';
     ds.extension='.png';
     ds.suffix='';
@@ -45,10 +45,12 @@ function demo()
     spring=ds;
 
 
-    % Nordland winter dataset
-    ds.name = 'winter';
-    ds.imagePath = '../datasets/nordland/64x32-grayscale-1fps/winter';       
+    % Nordland summer dataset
+    ds.name = 'summer';
+    ds.imagePath = '../SeqSLAMdatasets/nordland/64x32-grayscale-1fps/summer';       
     ds.saveFile = sprintf('%s-%d-%d-%d', ds.name, ds.imageIndices(1), ds.imageSkip, ds.imageIndices(end));
+    ds.imageSkip = 1;     % use every n-nth image
+    ds.imageIndices = 3:ds.imageSkip:360;    
     % ds.crop=[5 1 64 32];
     ds.crop=[];
     
