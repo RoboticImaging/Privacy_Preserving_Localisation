@@ -15,7 +15,7 @@ function mask = getValidHardwareMask(maskName, opt)
         
         % opt.edgeStrength>1 is the ratio of the two halves of the filter
         
-        % make v by default
+        % make horiz by default
         % check if middle row is going to be middle
         if mod(size(mask,1),2) == 0
             mask(:,1:size(mask,1)/2) = opt.edgeStrength;
@@ -26,10 +26,10 @@ function mask = getValidHardwareMask(maskName, opt)
             mask(:,(size(mask,1)+1)/2) = mean([opt.edgeStrength,1]);
         end
         
-        mask = mask./sum(mask(:));
-        
-        if opt.isVertical
+        if opt.isVertical == false
             mask = mask';
         end
+        
+        mask = mask./sum(mask(:));
     end
 end
