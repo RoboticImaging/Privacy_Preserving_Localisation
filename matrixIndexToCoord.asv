@@ -1,6 +1,0 @@
-function [x,y] = matrixIndexToCoord(i,j,matrixSize)
-    if mod(matrixSize,2) == 0
-        x = -matrixSize/2 - 1/2 + i;
-    else
-    end
-end

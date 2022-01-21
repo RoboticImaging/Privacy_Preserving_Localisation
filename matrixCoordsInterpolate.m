@@ -11,7 +11,7 @@ function A = matrixCoordsInterpolate(i,j,theta,matrixSize)
         % we have no nan's so the line goes through both corners, hence the
         % area is half 
         A = 1/2;
-    elseif sum(isnan(horiz)) >= 1 && sum(isnan(horiz)) >= 1
+    elseif sum(isnan(horiz)) == 1 && sum(isnan(vert)) == 1
         % we have a triangle with a shared corner with the square
         % 4 possible cases
         if isnan(horiz(1))
@@ -33,7 +33,7 @@ function A = matrixCoordsInterpolate(i,j,theta,matrixSize)
         end
         
         
-    elseif sum(isnan(horiz)) == 2 && sum(isnan(vert)) == 0
+    elseif (sum(isnan(horiz)) == 2 && sum(isnan(vert)) == 0) || (sum(isnan(horiz)) == 1 && sum(isnan(vert)) == 0)
         % we have trapz
         A = 0.5*sum(vert + 0.5);
         
@@ -41,7 +41,7 @@ function A = matrixCoordsInterpolate(i,j,theta,matrixSize)
         if A > 0.5
             A = 1 - A;
         end
-    elseif sum(isnan(horiz)) == 0 && sum(isnan(vert)) == 2
+    elseif (sum(isnan(horiz)) == 0 && sum(isnan(vert)) == 2) || (sum(isnan(horiz)) == 0 && sum(isnan(vert)) == 1)
         % we have trapz
         A = 0.5*sum(horiz + 0.5);
         
