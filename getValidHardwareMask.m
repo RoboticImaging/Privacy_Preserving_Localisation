@@ -4,6 +4,11 @@ function mask = getValidHardwareMask(maskName, opt)
     if strcmp(maskName, "disk")
         mask = fspecial('disk',opt.radius);
         
+        if opt.isInverse
+            mask = max(mask(:)) - mask;
+            mask = mask/sum(mask(:));
+        end
+        
     elseif strcmp(maskName, "gaussian")
         mask = fspecial('gaussian',opt.hsize,opt.sigma);
         

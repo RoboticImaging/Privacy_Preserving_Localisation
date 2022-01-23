@@ -63,3 +63,95 @@ legend({pixels(:).info})
 xlabel('Disk radius [px]')
 ylabel('Convolution value')
 
+
+% descriptor
+lightBlobDescriptor = zeros(size(convImages,1),size(convImages,2));
+for i = 1:size(convImages,1)
+    for j = 1:size(convImages,2)
+        pixelTrace = convImages(i,j,:);
+        lightBlobDescriptor(i,j) = max(pixelTrace) - min(pixelTrace);
+    end
+end
+figure
+imagesc(lightBlobDescriptor);
+
+% gradient descriptor
+lightBlobGrads = zeros(size(convImages,1),size(convImages,2));
+for i = 1:size(convImages,1)
+    for j = 1:size(convImages,2)
+        pixelTrace = reshape(convImages(i,j,:),1,[]);
+        lightBlobGrads(i,j) = getGradOfLinearRegion(diskSizes,pixelTrace,10);
+    end
+end
+figure
+h = imagesc(lightBlobGrads);
+set(h, 'AlphaData', 1-isnan(lightBlobGrads))
+
+
+%% inverse disks for dark blobs
+
+convImages = runDisks(img,diskSizes,true);
+
+figure
+imagesc(img)
+
+
+% consider a pixel
+pixels(1).k = 418;
+pixels(1).l = 348;
+pixels(1).info = 'dark chess square';
+
+
+pixels(2).k = 422;
+pixels(2).l = 309;
+pixels(2).info = 'knight';
+
+pixels(3).k = 63;
+pixels(3).l = 333;
+pixels(3).info = 'map';
+
+pixels(4).k = 126;
+pixels(4).l = 591;
+pixels(4).info = 'tv corner';
+
+hold on
+for i = 1:length(pixels)
+    plot(pixels(i).l,pixels(i).k,'ro','LineWidth',2);
+end
+
+
+
+% plot trace as function of disks
+figure
+hold on
+for i = 1:length(pixels)
+    plot(diskSizes, reshape(convImages(pixels(i).k,pixels(i).l,:),1,[]));
+end
+
+legend({pixels(:).info})
+xlabel('Disk radius [px]')
+ylabel('Convolution value')
+
+
+% descriptor
+darkBlobDescriptor = zeros(size(convImages,1),size(convImages,2));
+for i = 1:size(convImages,1)
+    for j = 1:size(convImages,2)
+        pixelTrace = convImages(i,j,:);
+        darkBlobDescriptor(i,j) = max(pixelTrace) - min(pixelTrace);
+    end
+end
+figure
+imagesc(darkBlobDescriptor);
+
+
+% gradient descriptor
+darkBlobGrads = zeros(size(convImages,1),size(convImages,2));
+for i = 1:size(convImages,1)
+    for j = 1:size(convImages,2)
+        pixelTrace = reshape(convImages(i,j,:),1,[]);
+        darkBlobGrads(i,j) = getGradOfLinearRegion(diskSizes,pixelTrace,10);
+    end
+end
+figure
+imagesc(darkBlobGrads);

@@ -49,6 +49,9 @@ function A = matrixCoordsInterpolate(i,j,theta,matrixSize)
         if A > 0.5
             A = 1 - A;
         end
+    elseif sum(isnan(horiz)) == 2 && sum(isnan(vert)) == 2
+        % we have just missed the square
+        A = 0;
     end
     
     % have to choose between triangle and remaining area

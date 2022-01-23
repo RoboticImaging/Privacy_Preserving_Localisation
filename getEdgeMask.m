@@ -1,6 +1,7 @@
 function mask = getEdgeMask(matrixSize,theta)
     % takes theta (deg) and matrix size to do fancy interp
 %     theta = mod(theta,360);
+    assert(-180 <= theta && theta <= 180);
     mask = zeros(matrixSize);
     
     for i = 1:matrixSize
@@ -18,5 +19,5 @@ function mask = getEdgeMask(matrixSize,theta)
             mask(i,j) = A;
         end
     end
-%     mask = mask./(matrixSize^2/2);
+    mask = mask./(matrixSize^2/2);
 end
