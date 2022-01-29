@@ -10,7 +10,7 @@ ds.prefix='frame-';
 ds.extension='.png';
 ds.suffix='.color';
 ds.imageSkip = 10;     % use every n-th image
-ds.imageIndices = 1:ds.imageSkip:900;    
+ds.imageIndices = 1:ds.imageSkip:999;    
 ds.isPadded = true;
 ds.convert2gray = true;
 
@@ -85,7 +85,20 @@ for i = 1:size(convImages,1)
 end
 figure
 h = imagesc(lightBlobGrads);
-set(h, 'AlphaData', 1-isnan(lightBlobGrads))
+% set(h, 'AlphaData', 1-isnan(lightBlobGrads))
+title('light blob grads')
+
+figure
+hold on
+plot(max(lightBlobGrads,[],1))
+plot(min(lightBlobGrads,[],1))
+title('Max/min by col')
+figure
+hold on
+plot(max(lightBlobGrads,[],2))
+plot(min(lightBlobGrads,[],2))
+title('Max/min by row')
+
 
 
 %% inverse disks for dark blobs

@@ -14,7 +14,7 @@ ds.prefix='frame-';
 ds.extension='.png';
 ds.suffix='.color';
 ds.imageSkip = 10;     % use every n-th image
-ds.imageIndices = 1:ds.imageSkip:900;    
+ds.imageIndices = 1:ds.imageSkip:999;    
 ds.isPadded = true;
 ds.convert2gray = true;
 
@@ -25,7 +25,7 @@ img = ds.imgs{1};
 
 dTheta = 6;
 edgeAngles = -180:dTheta:(180-dTheta);
-hsize = 4;
+hsize = 3;
 
 convImages = runEdges(img,edgeAngles,hsize);
 
@@ -91,3 +91,23 @@ end
 
 figure
 imagesc(edgeMeasure)
+colorbar
+
+% try to get direction of edge too
+edgeDirection = zeros(size(convImages,1),size(convImages,2));
+for i = 1:size(convImages,1)
+    for j = 1:size(convImages,2)
+        trace = reshape(convImages(i,j,:),1,[]);
+        [~,loc] = max(trace);
+        edgeDirection(i,j) = edgeAngles(loc);
+    end
+end
+
+figure
+colormap(getCmap())
+imagesc(edgeDirection)
+title('edge direction')
+colorbar
+
+
+
