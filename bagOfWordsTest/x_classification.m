@@ -21,5 +21,14 @@ bag = bagOfFeatures(trainingSet);
 img = readimage(imds, 1);
 featureVector = encode(bag, img);
 
+categoryClassifier = trainImageCategoryClassifier(trainingSet, bag);
+confMatrix = evaluate(categoryClassifier, trainingSet);
 
+confMatrix = evaluate(categoryClassifier, validationSet);
 
+img = imread(fullfile('MerchData','MathWorks Cap','Hat_0.jpg'));
+figure
+imshow(img)
+[labelIdx, scores] = predict(categoryClassifier, img);
+
+categoryClassifier.Labels(labelIdx)
