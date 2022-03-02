@@ -7,6 +7,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
     for octIdx = 1:length(DoGimgs)
         DoGimgsInOct = DoGimgs{octIdx};
         
+        % TODO: also restrict to not be on edges of img
         % compute minima, maxima and apply contrast thresholding
         thresholdVals = abs(DoGimgsInOct) > contrastThreshold);
         DoGmax = or(and(imregionalmax( DoGimgsInOct, 26), thresholdVals),...
@@ -22,7 +23,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                         % 
                         localizationRes = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
-                                                                                                    r, nAttemptsConverge)
+                                                                                                    r, nAttemptsConverge);
                     end
                 end
             end
