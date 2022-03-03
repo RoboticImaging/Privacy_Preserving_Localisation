@@ -1,6 +1,7 @@
 function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge)
+    % note that sigmaIdx is off by one to help calculate cube efficiently
     % quaratic fit to do subpixel location
     
     extOutsideImg = false;
@@ -8,7 +9,7 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
 
     % try to converge to exact extremum
     for attemptIdx = 1:nAttemptsConverge
-        cube = DoGimgInOct(i-1:i+1, j-1:j+1, sigmaIdx-1:sigmaIdx+1);
+        cube = DoGimgInOct(i-1:i+1, j-1:j+1, sigmaIdx:sigmaIdx+2);
         grad = computeGradAtCenterPixel(cube);
         hess = computeHessianAtCentrePixel(cube);
         extUpdate = -inv(hess)*grad;
@@ -49,7 +50,13 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
         % check that point is not too elongate (edge avoidance)
         if xyHessDet > 0 && r*(xyHessTrace^2) < ((r+1)^2)*xyHessDet
             keyPt.pt = [(i + extUpdate(1))*(2^octIdx), (j + extUpdate(2))*(2^octIdx)]; % position
-            keyPt.octave = octIdx + sigmaIdx*2^8
+            % note we use sigmaIdx-1 to adjust for index starting at 1
+            keyPt.octave = octIdx + (sigmaIdx - 1)*2^8 + round((extUpdate(3) + 0.5)*255)*2^16;
+            keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx + 1); % size, oct +1 due to double at start
+            keyPt.response = abs(fnValAtExt);
         end
     end
+    keyPt = NaN;
+    sigmaIdx = NaN;
+
 end
