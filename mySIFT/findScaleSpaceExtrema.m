@@ -3,6 +3,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
     r = 10; % eigenvalue ratio to determine a max
     nAttemptsConverge = 5;
 
+    keypts = false;
     % loop over octaves:
     for octIdx = 1:length(DoGimgs)
         DoGimgsInOct = DoGimgs{octIdx};
@@ -25,13 +26,19 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                         [keyPt,keyPtsigIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgsInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge);
-                        if isstruct(keyPt)
+                        if isa(keyPt,'SIFTPoints')
                             keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
+
+                            % check if first keypt
+                            if ~isa(keypts,'SIFTPoints')
+                                keypts = keyPtwithOrientations;
+                            else
+                                keypts = [keypts; keyPtwithOrientations];
+                            end
                         end
                     end
                 end
             end
         end
     end
-    keypts = 0;
 end

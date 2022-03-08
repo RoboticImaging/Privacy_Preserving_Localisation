@@ -21,7 +21,7 @@ function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma
     contrastThreshold = 0.04;
     keypoints = findScaleSpaceExtrema(gImgs, DoGstack, nIntervals, sigma, imgBorderWidth, contrastThreshold);
 
-
+    
 
 
     descriptors = 0;

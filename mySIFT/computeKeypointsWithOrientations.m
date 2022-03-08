@@ -12,17 +12,17 @@ function [keyPts] = computeKeypointsWithOrientations(keypoint, octIdx, gImg, rad
     imgSize = size(gImg);
 
     % calculate window to look at
-    scale = windowScaleFactor*keypoint.size/(2^(octIdx));
+    scale = windowScaleFactor*keypoint.Scale/(2^(octIdx));
     radius = round(radiusFact*scale);
     weightFact = -0.5/scale^2;
     rawHist = zeros(1,nBins);
     smoothedHist = zeros(1,nBins);
 
     for i = -radius:radius
-        regionY = round(keypoint.pt(1)/(2^(octIdx-1))) + i;
+        regionY = round(keypoint.Location(1)/(2^(octIdx-1))) + i;
         if regionY > 0 && regionY < imgSize(1)
             for j = -radius:radius
-                regionX = round(keypoint.pt(2)/(2^(octIdx-1))) + j;
+                regionX = round(keypoint.Location(2)/(2^(octIdx-1))) + j;
                 if regionX > 1 && regionX < imgSize(2)-1
                     dx = gImg(regionY, regionX+1) - gImg(regionY, regionX-1);
                     dy = gImg(regionY+1, regionX) - gImg(regionY-1, regionX);
@@ -54,7 +54,7 @@ function [keyPts] = computeKeypointsWithOrientations(keypoint, octIdx, gImg, rad
                                             smoothedHist > circshift(smoothedHist,-1));
 
 
-    keyPts = struct('pt', {}, 'size', {},'response', {}, 'octave', {}, 'orientation', {});
+    keyPts = true;
     
     for binIdx = 1:nBins
         % check if peak
@@ -68,13 +68,15 @@ function [keyPts] = computeKeypointsWithOrientations(keypoint, octIdx, gImg, rad
                 right = smoothedHist(idxPlusOne);
                 interpPeakIdx = (binIdx + 0.5*(left-right)/(left-2*peakVal+right));
                 orientation = 360 - interpPeakIdx*360/nBins;
-                newKeypt.pt = keypoint.pt;
-                newKeypt.size = keypoint.size;
-                newKeypt.response = keypoint.response;
-                newKeypt.octave = keypoint.octave;
-                newKeypt.orientation = orientation;
+                newKeypt = keypoint;
+                newKeypt.Orientation = deg2rad(orientation); %have to convert to rads for matlab standard
 
-                keyPts = [keyPts, newKeypt];
+                % check if first keypt
+                if ~isa(keyPts,'SIFTPoints')
+                    keyPts = newKeypt;
+                else
+                    keyPts = [keyPts; newKeypt];
+                end
             end
         end
     end

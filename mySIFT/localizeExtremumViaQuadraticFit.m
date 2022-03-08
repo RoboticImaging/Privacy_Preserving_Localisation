@@ -54,6 +54,11 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
             keyPt.octave = octIdx + (sigmaIdx - 1)*2^8 + round((extUpdate(3) + 0.5)*255)*2^16;
             keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx); % size of feature, oct isnt +1 since index starts at 1
             keyPt.response = abs(fnValAtExt);
+
+            keyPt = SIFTPoints(keyPt.pt, ...
+                                            "Metric", keyPt.response, ...
+                                            "Scale", keyPt.size,...
+                                            "Octave", keyPt.octave);
             return
         end
     end

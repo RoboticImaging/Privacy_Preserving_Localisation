@@ -13,3 +13,9 @@ imgBorderWidth = 5;
 
 [key,disc] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth);
 
+figure
+colormap(gray)
+imagesc(img)
+hold on
+plot(key.selectStrongest(10))
+axis image
