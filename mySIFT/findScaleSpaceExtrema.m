@@ -7,7 +7,6 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
     for octIdx = 1:length(DoGimgs)
         DoGimgsInOct = DoGimgs{octIdx};
         
-        % TODO: also restrict to not be on edges of img
         % compute minima, maxima and apply contrast thresholding
         thresholdVals = abs(DoGimgsInOct) > contrastThreshold;
 
@@ -23,14 +22,16 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                     % check value is true
                     if DoGmax(i, j, sigmaIdx)
                         % 
-                        localizationRes = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgsInOct, ...
+                        [keyPt,keyPtsigIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgsInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge);
+                        if isstruct(keyPt)
+                            keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
+                        end
                     end
                 end
             end
         end
-
     end
     keypts = 0;
 end

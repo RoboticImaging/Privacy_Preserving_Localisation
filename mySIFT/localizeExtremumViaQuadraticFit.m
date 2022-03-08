@@ -49,11 +49,12 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
         xyHessDet = det(xyHess);
         % check that point is not too elongate (edge avoidance)
         if xyHessDet > 0 && r*(xyHessTrace^2) < ((r+1)^2)*xyHessDet
-            keyPt.pt = [(i + extUpdate(1))*(2^octIdx), (j + extUpdate(2))*(2^octIdx)]; % position
+            keyPt.pt = [(i + extUpdate(1))*(2^(octIdx - 1)), (j + extUpdate(2))*(2^(octIdx - 1))]; % position
             % note we use sigmaIdx-1 to adjust for index starting at 1
             keyPt.octave = octIdx + (sigmaIdx - 1)*2^8 + round((extUpdate(3) + 0.5)*255)*2^16;
-            keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx + 1); % size, oct +1 due to double at start
+            keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx); % size of feature, oct isnt +1 since index starts at 1
             keyPt.response = abs(fnValAtExt);
+            return
         end
     end
     keyPt = NaN;
