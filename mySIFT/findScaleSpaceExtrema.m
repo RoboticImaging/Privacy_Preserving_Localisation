@@ -17,13 +17,14 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
 
 
         % loop over all true values
+        % outermost loop over DoG img stack D(x,y,sigma)
         for sigmaIdx = 1:(size(DoGmax,3)-2)
             for i = imgBorderWidth:(size(DoGmax,1)-imgBorderWidth)
                 for j = imgBorderWidth:(size(DoGmax,2)-imgBorderWidth)
                     % check value is true
                     if DoGmax(i, j, sigmaIdx)
                         % 
-                        [keyPt,keyPtsigIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, octIdx, nIntervals, DoGimgsInOct, ...
+                        [keyPt,keyPtsigIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx + 1, octIdx, nIntervals, DoGimgsInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge);
                         if isa(keyPt,'SIFTPoints')

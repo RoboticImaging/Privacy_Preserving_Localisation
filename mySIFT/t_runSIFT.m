@@ -19,5 +19,5 @@ figure
 colormap(gray)
 imagesc(img)
 hold on
-plot(key.selectStrongest(10))
+plot(key.selectStrongest(15))
 axis image

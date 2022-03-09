@@ -19,8 +19,7 @@ ds = loadImgs(ds);
 img = ds.imgs{1};
 
 
-diskSizes = 2:2:20;
-
+diskSizes = 4:1:30;
 convImages = runDisks(img,diskSizes);
 
 figure
@@ -44,6 +43,11 @@ pixels(3).info = 'map';
 pixels(4).k = 126;
 pixels(4).l = 591;
 pixels(4).info = 'tv corner';
+
+pixels(5).k = 300;
+pixels(5).l = 261;
+pixels(5).info = 'chair hole';
+
 
 hold on
 for i = 1:length(pixels)
@@ -88,6 +92,38 @@ h = imagesc(lightBlobGrads);
 % set(h, 'AlphaData', 1-isnan(lightBlobGrads))
 title('light blob grads')
 
+i=5;
+% can findpeaks along axis
+
+
+[pks,locs,w,p] = findPeaksInConv(convImages);
+
+figure
+imagesc(pks)
+title('peak value')
+
+figure
+imagesc(locs)
+title('disk scale')
+
+figure
+imagesc(w)
+title('peak width')
+
+figure
+imagesc(p)
+title('peak prominence')
+
+% % can also useregional max in 3d
+tmp = imregionalmax(convImages);
+tmp2 = any(tmp,3); % flatten using logical OR
+
+figure
+imagesc(tmp2)
+
+points = detectSIFTFeatures(img);
+
+return
 figure
 hold on
 plot(max(lightBlobGrads,[],1))

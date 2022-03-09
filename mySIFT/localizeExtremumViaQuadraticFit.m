@@ -9,7 +9,7 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
 
     % try to converge to exact extremum
     for attemptIdx = 1:nAttemptsConverge
-        cube = DoGimgInOct(i-1:i+1, j-1:j+1, sigmaIdx:sigmaIdx+2);
+        cube = DoGimgInOct(i-1:i+1, j-1:j+1, sigmaIdx-1:sigmaIdx+1);
         grad = computeGradAtCenterPixel(cube);
         hess = computeHessianAtCentrePixel(cube);
         extUpdate = -inv(hess)*grad;
@@ -25,9 +25,9 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
         sigmaIdx = sigmaIdx + round(extUpdate(3));
 
         % check if outside image
-        if (i < imgBorderWidth || i > size(DoGimgInOct,1) - imgBorderWidth ||...
-            j < imgBorderWidth || j > size(DoGimgInOct,1) - imgBorderWidth ||...
-            sigmaIdx < 1 || sigmaIdx > nIntervals)
+        if (i < imgBorderWidth || i > imgSize(1) - imgBorderWidth ||...
+            j < imgBorderWidth || j > imgSize(2) - imgBorderWidth ||...
+            sigmaIdx < 2 || sigmaIdx > nIntervals)
             extOutsideImg = true;
             break
         end
@@ -49,10 +49,10 @@ function [keyPt, sigmaIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx, oct
         xyHessDet = det(xyHess);
         % check that point is not too elongate (edge avoidance)
         if xyHessDet > 0 && r*(xyHessTrace^2) < ((r+1)^2)*xyHessDet
-            keyPt.pt = [(i + extUpdate(1))*(2^(octIdx - 1)), (j + extUpdate(2))*(2^(octIdx - 1))]; % position
+            keyPt.pt = [(i + extUpdate(1))*(2^(octIdx - 2)), (j + extUpdate(2))*(2^(octIdx - 2))]; % position
             % note we use sigmaIdx-1 to adjust for index starting at 1
-            keyPt.octave = octIdx + (sigmaIdx - 1)*2^8 + round((extUpdate(3) + 0.5)*255)*2^16;
-            keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx); % size of feature, oct isnt +1 since index starts at 1
+            keyPt.octave = octIdx - 1 + (sigmaIdx - 1)*2^8 + round((extUpdate(3) + 0.5)*255)*2^16;
+            keyPt.size = sigma*(2^(((sigmaIdx - 1) + extUpdate(3))/nIntervals))*2^(octIdx-1); % size of feature, oct isnt +1 since index starts at 1
             keyPt.response = abs(fnValAtExt);
 
             keyPt = SIFTPoints(keyPt.pt, ...

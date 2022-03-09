@@ -12,6 +12,7 @@ function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma
     baseImg = generateBaseImg(img, sigma, assumedBlur);
     % calculate the number of octaves
     nOct = computeNumberOfOctaves(size(baseImg));
+%     nOct = 1;
     % generate the sigma differences for the filters that are successively
     % applied
     gSigmas = generateGaussianSigmas(sigma, nIntervals);
@@ -19,13 +20,13 @@ function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma
     gImgs = generateGaussianImages(baseImg, nOct, gSigmas);
     if DEBUG
         figure 
-        LFDispMousePan(permute(gImgs{2},[3,1,2]))
+        LFDispMousePan(permute(gImgs{1},[3,1,2]));
     end
     % compute difference of gaussian in each stack
     DoGstack = generateDoG(gImgs);
     if DEBUG
         figure 
-        LFDispMousePan(permute(DoGstack{2},[3,1,2]))
+        LFDispMousePan(permute(DoGstack{1},[3,1,2]));
     end
 
     %%%%%% Part 2: find keypoints %%%%%%

@@ -2,3 +2,5 @@ data
 SeqSLAMdatasets
 bagOfWordsTest/MerchData
 *.asv
+pySIFT/__pycache__
+*.png
