@@ -11,6 +11,8 @@ assumedBlur = 0.5;
 imgBorderWidth = 5;
 
 
+
+%TODO: double check all sigmaIndex-ing and make sure you haven't mixed up python and maltab
 [key,disc] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth);
 
 figure

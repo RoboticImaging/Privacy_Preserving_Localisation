@@ -27,8 +27,8 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge);
                         if isa(keyPt,'SIFTPoints')
-                            keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
-
+%                             keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
+                            keyPtwithOrientations = keyPt;
                             % check if first keypt
                             if ~isa(keypts,'SIFTPoints')
                                 keypts = keyPtwithOrientations;
