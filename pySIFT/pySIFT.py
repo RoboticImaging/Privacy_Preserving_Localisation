@@ -26,15 +26,27 @@ def computeKeypointsAndDescriptors(image, sigma=1.6, num_intervals=3, assumed_bl
     """Compute SIFT keypoints and descriptors for an input image
     """
     image = image.astype('float32')
-    base_image = generateBaseImage(image, sigma, assumed_blur)
-    num_octaves = computeNumberOfOctaves(base_image.shape)
+# =============================================================================
+#     base_image = generateBaseImage(image, sigma, assumed_blur)
+# =============================================================================
+    base_image = image
+# =============================================================================
+#     num_octaves = computeNumberOfOctaves(base_image.shape)
+# =============================================================================
+    num_octaves = 2
     gaussian_kernels = generateGaussianKernels(sigma, num_intervals)
+    print(gaussian_kernels)
     gaussian_images = generateGaussianImages(base_image, num_octaves, gaussian_kernels)
+    print("gaussian_images stack shape", gaussian_images.shape)
     dog_images = generateDoGImages(gaussian_images)
+    print("dog_images stack shape", dog_images.shape)
     keypoints = findScaleSpaceExtrema(gaussian_images, dog_images, num_intervals, sigma, image_border_width)
-    keypoints = removeDuplicateKeypoints(keypoints)
-    keypoints = convertKeypointsToInputImageSize(keypoints)
-    descriptors = generateDescriptors(keypoints, gaussian_images)
+# =============================================================================
+#     keypoints = removeDuplicateKeypoints(keypoints)
+#     keypoints = convertKeypointsToInputImageSize(keypoints)
+#     descriptors = generateDescriptors(keypoints, gaussian_images)
+# =============================================================================
+    descriptors = 0
     return keypoints, descriptors
 
 #########################
@@ -116,6 +128,7 @@ def findScaleSpaceExtrema(gaussian_images, dog_images, num_intervals, sigma, ima
             for i in range(image_border_width, first_image.shape[0] - image_border_width):
                 for j in range(image_border_width, first_image.shape[1] - image_border_width):
                     if isPixelAnExtremum(first_image[i-1:i+2, j-1:j+2], second_image[i-1:i+2, j-1:j+2], third_image[i-1:i+2, j-1:j+2], threshold):
+                        print(i,j,image_index)
                         localization_result = localizeExtremumViaQuadraticFit(i, j, image_index + 1, octave_index, num_intervals, dog_images_in_octave, sigma, contrast_threshold, image_border_width)
                         if localization_result is not None:
                             keypoint, localized_image_index = localization_result

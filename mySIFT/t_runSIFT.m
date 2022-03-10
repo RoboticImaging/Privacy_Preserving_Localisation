@@ -3,7 +3,8 @@ clc;
 close all;
 
 img = imread('cameraman.tif');
-img = im2double(img);
+% img = img(1:end/2,:);
+img = im2double(img)*255;
 
 sigma = 1.6;
 nIntervals = 3;
@@ -19,5 +20,5 @@ figure
 colormap(gray)
 imagesc(img)
 hold on
-plot(key.selectStrongest(15))
+plot(key.selectStrongest(20))
 axis image

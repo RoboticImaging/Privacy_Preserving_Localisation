@@ -2,6 +2,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
 
     r = 10; % eigenvalue ratio to determine a max
     nAttemptsConverge = 5;
+    threshold = floor(0.5 * contrastThreshold / nIntervals * 255);
 
     keypts = false;
     % loop over octaves:
@@ -9,7 +10,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
         DoGimgsInOct = DoGimgs{octIdx};
         
         % compute minima, maxima and apply contrast thresholding
-        thresholdVals = abs(DoGimgsInOct) > contrastThreshold;
+        thresholdVals = abs(DoGimgsInOct) > threshold;
 
         connectedness = 26;
         DoGmax = or(and(imregionalmax( DoGimgsInOct, connectedness), thresholdVals),...
@@ -28,6 +29,7 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
                                                                                                     r, nAttemptsConverge);
                         if isa(keyPt,'SIFTPoints')
+                            fprintf('%d, %d, %d\n',i,j,sigmaIdx);
 %                             keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
                             keyPtwithOrientations = keyPt;
                             % check if first keypt
@@ -35,6 +37,9 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                                 keypts = keyPtwithOrientations;
                             else
                                 keypts = [keypts; keyPtwithOrientations];
+%                                 if length(keypts) == 10
+%                                     return
+%                                 end
                             end
                         end
                     end

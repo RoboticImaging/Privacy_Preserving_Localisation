@@ -2,17 +2,20 @@ function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma
     % Find SIFT features [Lowe 2004]
     % following pySIFT implementation as base version
     % https://github.com/rmislam/PythonSIFT/blob/master/pysift.py
-    assert(min(img,[],'all') >= 0 && max(img,[],'all') <= 1)
+
+
+%     assert(min(img,[],'all') >= 0 && max(img,[],'all') <= 1)
 
     DEBUG = true;
 
 
     %%%%%% Part 1: Generate DoG %%%%%%
     % generate the very base image by resizing to double the size
-    baseImg = generateBaseImg(img, sigma, assumedBlur);
+%     baseImg = generateBaseImg(img, sigma, assumedBlur);
+    baseImg = img;
     % calculate the number of octaves
-    nOct = computeNumberOfOctaves(size(baseImg));
-%     nOct = 1;
+%     nOct = computeNumberOfOctaves(size(baseImg));
+    nOct = 2;
     % generate the sigma differences for the filters that are successively
     % applied
     gSigmas = generateGaussianSigmas(sigma, nIntervals);

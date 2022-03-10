@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 
 
 image = cv2.imread('myCameraMan.png', 0)
+# =============================================================================
+# image = image.astype('float32')/255.
+# =============================================================================
 keypoints, descriptors = pySIFT.computeKeypointsAndDescriptors(image)
 
 
@@ -28,7 +31,7 @@ fig, ax = plt.subplots()
 ax.imshow(image)
 
 
-for i in range(15):
+for i in range(20):
     plt.plot(*keypointsSorted[i].pt, 'rx')
 
 
