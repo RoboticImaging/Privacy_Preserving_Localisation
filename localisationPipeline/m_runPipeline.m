@@ -6,18 +6,12 @@ dset = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
 
 
 imageSet = imageDatastore(dset,'LabelSource','foldernames','IncludeSubfolders',true);
-imageSet = subset(imageSet,1:40:1200);
+imageSubSet = subset(imageSet,1:40:1200);
 
-% Total number of images in the data set
-numel(imageSet.Files)
-
-% Display a one of the images
-figure
-I = imread(imageSet.Files{1});
-imshow(I);
+I = readimage(imageSubSet,1);
 
 %Pick a random subset of the flower images.
-trainingSet = splitEachLabel(imageSet, 0.6, 'randomized');
+trainingSet = splitEachLabel(imageSubSet, 1, 'randomized');
 
 % Specify the number of levels and branching factor of the vocabulary
 % tree used within bagOfFeatures. Empirical analysis is required to
@@ -27,17 +21,16 @@ numBranches = 5000;
 
 % Create a custom bag of features using the 'CustomExtractor' option.
 colorBag = bagOfFeatures(trainingSet, ...
-    'CustomExtractor', @siftFeatureExtractor, ...
+    'CustomExtractor', @orbBriefExtractor, ...
     'TreeProperties', [numLevels numBranches]);
 
 
-
 % Create a search index.
-ImageIndex = indexImages(imageSet,colorBag,'SaveFeatureLocations',false);
+ImageIndex = indexImages(imageSubSet,colorBag,'SaveFeatureLocations',false);
 
 
 % Define a query image
-queryImage = readimage(imageSet,21);
+queryImage = readimage(imageSet,150);
 
 figure
 imshow(queryImage)
@@ -47,4 +40,4 @@ imshow(queryImage)
 
 % Display results using montage. 
 figure
-montage(imageSet.Files(imageIDs),'ThumbnailSize',[200 200])
+montage(imageSubSet.Files(imageIDs),'ThumbnailSize',[200 200])
