@@ -12,13 +12,13 @@ assumedBlur = 0.5;
 imgBorderWidth = 5;
 
 
-
+doSubpixel = true;
 %TODO: double check all sigmaIndex-ing and make sure you haven't mixed up python and maltab
-[key,disc] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth);
+[key,disc] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth, doSubpixel);
 
 figure
 colormap(gray)
 imagesc(img)
 hold on
-plot(key.selectStrongest(20))
+plot(key.selectStrongest(10))
 axis image

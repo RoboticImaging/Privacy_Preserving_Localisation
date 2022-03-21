@@ -31,7 +31,7 @@ figure
 I = imread(flowerImageSet.Files{1});
 imshow(I);
 
-doTraining = false;
+doTraining = true;
 
 if doTraining
     %Pick a random subset of the flower images.

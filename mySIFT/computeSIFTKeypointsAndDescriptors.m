@@ -1,4 +1,4 @@
-function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth)
+function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma, nIntervals, assumedBlur, imgBorderWidth, doSubpixel)
     % Find SIFT features [Lowe 2004]
     % following pySIFT implementation as base version
     % https://github.com/rmislam/PythonSIFT/blob/master/pysift.py
@@ -33,8 +33,8 @@ function [keypoints,descriptors] = computeSIFTKeypointsAndDescriptors(img, sigma
     end
 
     %%%%%% Part 2: find keypoints %%%%%%
-    contrastThreshold = 0.04;
-    keypoints = findScaleSpaceExtrema(gImgs, DoGstack, nIntervals, sigma, imgBorderWidth, contrastThreshold);
+    contrastThreshold = 0.08;
+    keypoints = findScaleSpaceExtrema(gImgs, DoGstack, nIntervals, sigma, imgBorderWidth, contrastThreshold,doSubpixel);
 
     
 

@@ -1,4 +1,4 @@
-function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBorderWidth, contrastThreshold)
+function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBorderWidth, contrastThreshold, doSubpixel)
 
     r = 10; % eigenvalue ratio to determine a max
     nAttemptsConverge = 5;
@@ -27,11 +27,11 @@ function keypts = findScaleSpaceExtrema(gImgs, DoGimgs, nIntervals, sigma, imgBo
                         % 
                         [keyPt,keyPtsigIdx] = localizeExtremumViaQuadraticFit(i, j, sigmaIdx + 1, octIdx, nIntervals, DoGimgsInOct, ...
                                                                                                     sigma, contrastThreshold, imgBorderWidth, ...
-                                                                                                    r, nAttemptsConverge);
+                                                                                                    r, nAttemptsConverge, doSubpixel);
                         if isa(keyPt,'SIFTPoints')
                             fprintf('%d, %d, %d\n',i,j,sigmaIdx);
-%                             keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
-                            keyPtwithOrientations = keyPt;
+                            keyPtwithOrientations = computeKeypointsWithOrientations(keyPt, octIdx, gImgs{octIdx}(:,:,keyPtsigIdx));
+%                             keyPtwithOrientations = keyPt;
                             % check if first keypt
                             if ~isa(keypts,'SIFTPoints')
                                 keypts = keyPtwithOrientations;
