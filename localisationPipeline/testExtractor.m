@@ -1,6 +1,8 @@
-function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, testImagesIndexes, extractor)
+function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImageIdxs, extractor)
     imageSet = imageDatastore(dset,'LabelSource','foldernames','IncludeSubfolders',true);
-    imageSubSet = subset(imageSet,1:trainingSubsetSkip:numel(imageSet.Files));
+
+    trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
+    imageSubSet = subset(imageSet,trainIdx);
     
     I = readimage(imageSubSet,1);
     
@@ -16,9 +18,8 @@ function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, testIma
     % Create a search index.
     ImageIndex = indexImages(imageSubSet,bag,'SaveFeatureLocations',false);
     
-    
-    
-    for imgIdx = testImagesIndexes
+
+    for imgIdx = visualiseImageIdxs
         % Define a query image
         queryImage = readimage(imageSet,imgIdx);
         
@@ -26,10 +27,28 @@ function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, testIma
         imshow(queryImage)
         
         % Search for the top 5 images with similar color content
-        [imageIDs, scores] = retrieveImages(queryImage, ImageIndex,'NumResults',5);
+        [imageIDs, ~] = retrieveImages(queryImage, ImageIndex,'NumResults',5);
         
         % Display results using montage. 
         figure
-        montage(imageSubSet.Files(imageIDs),'ThumbnailSize',[200 200])
+        montage(imageSet.Files(imageIDs),'ThumbnailSize',[200 200])
     end
+
+    % seq slam like plots for guessed positon
+    testImageIdxes = 1:3:numel(imageSet.Files);
+    estimatedIdx = zeros(size(testImageIdxes));
+
+    for i = 1:length(testImageIdxes)
+        testImage = readimage(imageSet,testImageIdxes(i));
+        [imageIDs, ~] = retrieveImages(testImage, ImageIndex,'NumResults',1);
+        estimatedIdx(i)  = trainIdx(imageIDs);
+    end
+
+    figure
+    plot(testImageIdxes, estimatedIdx,'x')
+    hold on
+
+    plot(testImageIdxes, testImageIdxes,'r')
+    xlabel('Test image index')
+    ylabel('Estimated image index')
 end
