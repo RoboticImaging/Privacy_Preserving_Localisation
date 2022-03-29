@@ -31,7 +31,7 @@ function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visuali
         
         % Display results using montage. 
         figure
-        montage(imageSet.Files(imageIDs),'ThumbnailSize',[200 200])
+        montage(imageSubSet.Files(imageIDs),'ThumbnailSize',[200 200])
     end
 
     % seq slam like plots for guessed positon
@@ -51,4 +51,10 @@ function testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visuali
     plot(testImageIdxes, testImageIdxes,'r')
     xlabel('Test image index')
     ylabel('Estimated image index')
+
+    fprintf('Accuracy of extractor: %.3f\n', 100*computeAccuracyOverTest(testImageIdxes, estimatedIdx, ...
+                                                                                                            2*trainingSubsetSkip))
+
+    figure
+    histogram(testImageIdxes- estimatedIdx);
 end

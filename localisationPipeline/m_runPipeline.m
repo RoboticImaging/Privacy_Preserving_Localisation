@@ -12,9 +12,9 @@ numBranches = 5000;
 
 visualiseImagesIndexes = [201, 462,701];
 
-extractor = @simpleGlobalFeatExtractor;
+% extractor = @simpleGlobalFeatExtractor;
 % extractor = @siftFeatureExtractor;
-% extractor = @orbBriefExtractor;
+extractor = @orbBriefExtractor;
 
 testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor)
 
