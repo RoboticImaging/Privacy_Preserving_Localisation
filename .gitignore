@@ -4,3 +4,5 @@ bagOfWordsTest/MerchData
 *.asv
 pySIFT/__pycache__
 *.png
+*.fig
+*.pdf
