@@ -4,7 +4,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
         isPlotting = true;
     end
 
-    imageSet = imageDatastore(dset,'LabelSource','foldernames','IncludeSubfolders',true);
+    imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
 
     trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
     imageSubSet = subset(imageSet,trainIdx);
@@ -45,7 +45,11 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     for i = 1:length(testImageIdxes)
         testImage = readimage(imageSet,testImageIdxes(i));
         [imageIDs, ~] = retrieveImages(testImage, ImageIndex,'NumResults',1);
-        estimatedIdx(i)  = trainIdx(imageIDs);
+        if ~isempty(imageIDs)
+            estimatedIdx(i)  = trainIdx(imageIDs);
+        else 
+            estimatedIdx(i) = nan;
+        end
     end
 
     if isPlotting
