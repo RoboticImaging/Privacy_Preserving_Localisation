@@ -21,7 +21,7 @@ visualiseImagesIndexes = [201, 462,701];
 % extractor = @orbBriefExtractor;
 
 % if using random lines:
-nLines = 5000;
+nLines = 1000;
 sampleDensity = max(dset.imsize);
 lines = generateRandomLines(dset.imsize, 100);
 [xToSample, yToSample] = lines2SamplePoints(lines, 200); % I am speed
