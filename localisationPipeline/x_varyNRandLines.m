@@ -20,16 +20,18 @@ visualiseImagesIndexes = [];
 nLines = round(logspace(1,3.7,10));
 nIter = 10;
 
+trainSubsetSkip = 10;
+
 figure
 acc = zeros(nIter,length(nLines));
 for nIdx = 1:length(nLines)
     for i = 1:nIter
         sampleDensity = max(dset.imsize);
-        lines = generateRandomLines(dset.imsize, 100);
-        [xToSample, yToSample] = lines2SamplePoints(lines, 200); % I am speed
+        lines = generateRandomLines(dset.imsize, nLines(nIdx));
+        [xToSample, yToSample] = lines2SamplePoints(lines, sampleDensity); % I am speed
         extractor = @(img) maxMinFeaturesAlongLines(img, xToSample,yToSample);
 
-        acc(i,nIdx) = testExtractor(dset, 10, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+        acc(i,nIdx) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
     end
 end
 errorbar(nLines, mean(acc), std(acc)/sqrt(nIter));

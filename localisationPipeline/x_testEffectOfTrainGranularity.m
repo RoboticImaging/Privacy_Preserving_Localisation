@@ -2,7 +2,10 @@ clear;
 clc;
 close all;
 
-dset = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
+dsetName = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
+% dsetName = '../data/dum_cloudy1/png';
+
+dset = getDset(dsetName);
 
 
 % BoF params:
@@ -10,11 +13,20 @@ numLevels = 1;
 numBranches = 5000;
 
 visualiseImagesIndexes = [];
+% 
+skipVals = [7,15,30,50,70,100];
 
-skipVals = [15,30,50,70,100];
+% skipVals = [100,101];
+% eTors = {@simpleGlobalFeatExtractor,@siftFeatureExtractor,@orbBriefExtractor};
+eTors = {@(img) colFeaturesMinMax(img,false,false),
+              @(img) colFeaturesMinMax(img,false,true),
+              @(img) colFeaturesMinMax(img,true,false),
+              @(img) colFeaturesMinMax(img,true,true)};
 
-% skipVals = [5,10];
-eTors = {@simpleGlobalFeatExtractor,@siftFeatureExtractor,@orbBriefExtractor};
+legCell = {'No Metric',
+                'No Metric, normalise to mean of whole img ',
+                'contrast Metric',
+                'contrast Metric, normalise to mean of whole img'};
 
 figure
 for eTorIdx = 1:length(eTors)
@@ -33,8 +45,9 @@ for eTorIdx = 1:length(eTors)
 end
 xlabel('Training Stride')
 ylabel('Accuracy')
-legend('global', 'SIFT', 'ORB')
+% legend('global', 'SIFT', 'ORB')
+legend(legCell)
 
 ylim([0,1])
-saveas(gcf,'granularityEffect.fig')
+saveas(gcf,'granularityEffectForDifferentColumns.fig')
 
