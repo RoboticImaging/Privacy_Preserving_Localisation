@@ -17,7 +17,7 @@ function lines = generateRandomLines(imgSize, Nlines)
 
 
     for lineIdx = 1:Nlines
-        lines(lineIdx).point = [imgSize(2)*rand() imgSize(1)*rand()]'; % have to flip bc axes different to image axes
+        lines(lineIdx).point = [1+(imgSize(2)-1)*rand(), 1+(imgSize(1)-1)*rand()]'; % have to flip bc axes different to image axes
         angle = 2*pi*rand();
         lines(lineIdx).dir = [cos(angle), sin(angle)]';
 

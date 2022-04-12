@@ -21,12 +21,19 @@ visualiseImagesIndexes = [201, 462,701];
 % extractor = @orbBriefExtractor;
 
 % if using random lines:
-nLines = 1000;
-sampleDensity = max(dset.imsize);
-lines = generateRandomLines(dset.imsize, 100);
-[xToSample, yToSample] = lines2SamplePoints(lines, 200); % I am speed
-extractor = @(img) maxMinFeaturesAlongLines(img, xToSample,yToSample);
+% nLines = 1000;
+% sampleDensity = max(dset.imsize);
+% lines = generateRandomLines(dset.imsize, 100);
+% [xToSample, yToSample] = lines2SamplePoints(lines, 200); % I am speed
+% extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
 
-testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor)
+% using circles
+nCirc = 100;
+nSamples = 200;
+radiusBounds = [40,100];
+[xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCirc, radiusBounds, nSamples);
+extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
+
+testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor);
 
 

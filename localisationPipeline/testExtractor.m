@@ -1,9 +1,12 @@
-function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImageIdxs, extractor, isPlotting)
+function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImageIdxs, extractor, isPlotting, isVerbose)
 
     if nargin == 6
         isPlotting = true;
     end
-
+    if nargin <=7
+        isVerbose = true;
+    end
+    
     imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
 
     trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
@@ -15,7 +18,8 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     % Create a custom bag of features using the 'CustomExtractor' option.
     bag = bagOfFeatures(trainingSet, ...
         'CustomExtractor', extractor, ...
-        'TreeProperties', [numLevels numBranches]);
+        'TreeProperties', [numLevels numBranches],...
+        'Verbose', );
     
     
     % Create a search index.
@@ -39,7 +43,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     end
 
     % seq slam like plots for guessed positon
-    testImageIdxes = 1:5:numel(imageSet.Files);
+    testImageIdxes = 1:3:numel(imageSet.Files);
     estimatedIdx = zeros(size(testImageIdxes));
 
     for i = 1:length(testImageIdxes)

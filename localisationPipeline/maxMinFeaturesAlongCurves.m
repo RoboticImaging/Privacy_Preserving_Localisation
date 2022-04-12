@@ -1,4 +1,4 @@
-function [features, metrics] = maxMinFeaturesAlongLines(img, xToSample,yToSample)
+function [features, metrics] = maxMinFeaturesAlongCurves(img, xToSample,yToSample)
     % find max and min along an arbitrary line through the image
 
     img = double(img);
