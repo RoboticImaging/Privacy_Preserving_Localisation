@@ -19,6 +19,7 @@ visualiseImagesIndexes = [201, 462,701];
 % extractor = @simpleGlobalFeatExtractor;
 % extractor = @siftFeatureExtractor;
 % extractor = @orbBriefExtractor;
+extractor = @featureSPC;
 
 % if using random lines:
 % nLines = 1000;
@@ -28,11 +29,11 @@ visualiseImagesIndexes = [201, 462,701];
 % extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
 
 % using circles
-nCirc = 100;
-nSamples = 200;
-radiusBounds = [40,100];
-[xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCirc, radiusBounds, nSamples);
-extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
+% nCirc = 100;
+% nSamples = 200;
+% radiusBounds = [40,100];
+% [xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCirc, radiusBounds, nSamples);
+% extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
 
 testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor);
 

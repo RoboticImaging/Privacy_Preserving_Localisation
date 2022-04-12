@@ -6,7 +6,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     if nargin <=7
         isVerbose = true;
     end
-    
+
     imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
 
     trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
@@ -19,7 +19,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     bag = bagOfFeatures(trainingSet, ...
         'CustomExtractor', extractor, ...
         'TreeProperties', [numLevels numBranches],...
-        'Verbose', );
+        'Verbose', isVerbose);
     
     
     % Create a search index.

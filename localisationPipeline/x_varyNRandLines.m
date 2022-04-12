@@ -64,5 +64,23 @@ legend('Same','Random')
 ylim([0,1])
 
 
-saveas(gcf,'compareRandLines.fig')
+% saveas(gcf,'compareRandLines.fig')
 
+%% compare with sift baseline
+extractor = @siftFeatureExtractor;
+numBranches = 5000;
+accSift = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+
+hold on
+plot(xlim,[accSift,accSift],'k--')
+legend('Same','Random','SIFT')
+
+
+
+numBranches = 25000;
+
+accSift(2) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+
+hold on
+plot(xlim,[accSift(2),accSift(2)],'m--')
+legend('Same','Random','SIFT','SIFT(5xbranches)')

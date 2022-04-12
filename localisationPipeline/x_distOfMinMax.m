@@ -11,13 +11,23 @@ imageSubSet = subset(imageSet,1:trainingSubsetSkip:numel(imageSet.Files));
 
 
 
-img = readimage(imageSubSet, 1);
+img = readimage(imageSet, 100);
 
-[feat,metric] = simpleGlobalFeatExtractor(img);
+[features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, 2e3, 100);
 
-plot(feat(:,1), feat(:,2),'r.')
+
+plot(features(:,1), features(:,2),'r.')
 xlim([0,255])
 ylim([0,255])
+
+figure
+[x1,x2] = meshgrid(0:255, 0:255);
+x1 = x1(:);
+x2 = x2(:);
+xi = [x1 x2];
+[f,xi] = ksdensity(features,xi);
+imagesc(0:255,0:255,reshape(f,[256,256]))
+set(gca,'YDir','normal')
 
 figure
 imshow(img)

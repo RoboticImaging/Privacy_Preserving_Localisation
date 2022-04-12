@@ -21,12 +21,14 @@ skipVals = [7,15,30,50,70,100];
 eTors = {@(img) colFeaturesMinMax(img,false,false),
               @(img) colFeaturesMinMax(img,false,true),
               @(img) colFeaturesMinMax(img,true,false),
-              @(img) colFeaturesMinMax(img,true,true)};
+              @(img) colFeaturesMinMax(img,true,true),
+              @featureSPC};
 
 legCell = {'No Metric',
                 'No Metric, normalise to mean of whole img ',
                 'contrast Metric',
-                'contrast Metric, normalise to mean of whole img'};
+                'contrast Metric, normalise to mean of whole img',
+                'mean only'};
 
 figure
 for eTorIdx = 1:length(eTors)
@@ -49,5 +51,5 @@ ylabel('Accuracy')
 legend(legCell)
 
 ylim([0,1])
-saveas(gcf,'granularityEffectForDifferentColumns.fig')
+% saveas(gcf,'granularityEffectForDifferentColumns.fig')
 
