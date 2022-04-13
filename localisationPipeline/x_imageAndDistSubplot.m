@@ -6,7 +6,7 @@ dset = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
 
 imageSet = imageDatastore(dset,'LabelSource','foldernames','IncludeSubfolders',true);
 
-img2Show = [1,50,100,700, 500];
+img2Show = [1,200,500,700, 900];
 nImgs = length(img2Show);
 
 

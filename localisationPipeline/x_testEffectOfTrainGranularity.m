@@ -14,7 +14,7 @@ numBranches = 5000;
 
 visualiseImagesIndexes = [];
 % 
-skipVals = [7,15,30,50,70,100];
+skipVals = [5,10,15,30,50,70,100];
 
 % skipVals = [100,101];
 % eTors = {@simpleGlobalFeatExtractor,@siftFeatureExtractor,@orbBriefExtractor};
@@ -53,3 +53,10 @@ legend(legCell)
 ylim([0,1])
 % saveas(gcf,'granularityEffectForDifferentColumns.fig')
 
+%% add effect of random guesses
+
+nTraining = floor(dset.nImgs./skipVals);
+randAcc = 3./nTraining;
+
+plot(skipVals,randAcc,'k--')
+legend([legCell;"random guessing"])

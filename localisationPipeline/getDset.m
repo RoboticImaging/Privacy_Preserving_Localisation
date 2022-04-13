@@ -4,4 +4,5 @@ function dset = getDset(path)
 
     img = readimage(imageSet,1);
     dset.imsize = size(img);
+    dset.nImgs = size(imageSet.Files,1);
 end

@@ -2,8 +2,8 @@ clear;
 clc;
 close all;
 
-dsetName = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
-% dsetName = '../data/dum_cloudy1/png';
+% dsetName = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
+dsetName = '../data/dum_cloudy1/png';
 
 dset = getDset(dsetName);
 
