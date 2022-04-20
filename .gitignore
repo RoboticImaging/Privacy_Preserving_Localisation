@@ -6,3 +6,6 @@ pySIFT/__pycache__
 *.png
 *.fig
 *.pdf
+*.avi
+*.mp4
+*.mat
