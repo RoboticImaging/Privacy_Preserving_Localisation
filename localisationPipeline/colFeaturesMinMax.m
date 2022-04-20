@@ -10,9 +10,9 @@ function [feat,metric] = colFeaturesMinMax(img, useMetric, useNormalise)
 
 
     if useNormalise
-        feat = feat./mean(img,"all");
+        feat = feat./mean(img(:));
         if useMetric
-            metric = metric./mean(img,"all");
+            metric = metric./mean(img(:));
         end
     end
 end
