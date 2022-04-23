@@ -5,7 +5,8 @@ close all;
 rng(1);
 
 
-dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
+% dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
+dset = getDset('../data/MyDsets/PNRtopWalkthrough1/imgs');
 
 
 % BoF params:
@@ -17,31 +18,16 @@ visualiseImagesIndexes = [];
 
 % skipVals = [5,10];
 % eTors = {@simpleGlobalFeatExtractor,@siftFeatureExtractor,@orbBriefExtractor};
-nLines = round(logspace(1,3.2,7));
+nLines = round(logspace(2,4,5));
 % nLines = round(logspace(1,2,2));
-nIter = 4;
+nIter = 3;
 % nIter = 2;
 
-trainSubsetSkip = 10;
+trainSubsetSkip = 20;
 
 figure
-acc = zeros(nIter,length(nLines));
-% test for random lines randomly
-for nIdx = 1:length(nLines)
-    for i = 1:nIter
-        sampleDensity = max(dset.imsize);
-        lines = generateRandomLines(dset.imsize, nLines(nIdx));
-        [xToSample, yToSample] = lines2SamplePoints(lines, sampleDensity); % I am speed
-        extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
 
-        acc(i,nIdx) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
-    end
-end
-hold on
-errorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
-
-
-% now repeat for unique rand Circ
+% now repeat for unique rand lines
 acc = zeros(nIter,length(nLines));
 for nIdx = 1:length(nLines)
     for i = 1:nIter
@@ -52,28 +38,12 @@ for nIdx = 1:length(nLines)
     end
 end
 hold on
-errorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
+ATerrorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
 
 
 nCircles= nLines;
 
 radii = [15,50];
-
-acc = zeros(nIter,length(nCircles));
-% test for random lines randomly
-for nIdx = 1:length(nCircles)
-    for i = 1:nIter
-        sampleDensity = max(dset.imsize);
-        [xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCircles(nIdx), radii, sampleDensity);
-        extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
-
-        acc(i,nIdx) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
-    end
-end
-hold on
-errorbar(nCircles, mean(acc), std(acc)/sqrt(nIter));
-
-
 
 % now repeat for unique rand Circ
 acc = zeros(nIter,length(nLines));
@@ -86,11 +56,27 @@ for nIdx = 1:length(nLines)
     end
 end
 hold on
-errorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
+ATerrorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
+
+%% now circles & lines
+circLineSplit = 0.5;
+acc = zeros(nIter,length(nLines));
+for nIdx = 1:length(nLines)
+    for i = 1:nIter
+        sampleDensity = max(dset.imsize);
+        extractor = @(img) maxMinFeaturesUniCircLines(img, nCircles(nIdx), circLineSplit, radii, sampleDensity);
+
+        acc(i,nIdx) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+    end
+end
+hold on
+ATerrorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
+
 
 xlabel('Number of lines')
 ylabel('Accuracy')
-legend('Same Lines','Random Lines','Same Circles','Random Circles')
+% legend('Same Lines','Random Lines','Same Circles','Random Circles')
+legend('Random Lines','Random Circles','Random Circles and Lines (50/50)')
 
 
 ylim([0,1])
@@ -104,7 +90,7 @@ numBranches = 5000;
 accSift = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
 
 hold on
-plot(xlim,[accSift,accSift],'k--')
+ATplot(xlim,[accSift,accSift],'k--')
 
 
 
@@ -113,6 +99,6 @@ numBranches = 25000;
 accSift(2) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
 
 hold on
-plot(xlim,[accSift(2),accSift(2)],'m--')
-legend('Same Lines','Random Lines','Same Circles','Random Circles', 'SIFT','SIFT(5xbranches)')
-saveas(gcf,'compareRandLinesAndCirc.fig')
+ATplot(xlim,[accSift(2),accSift(2)],'m--')
+legend('Random Lines','Random Circles','Random Circles and Lines (50/50)', 'SIFT','SIFT(5xbranches)')
+saveas(gcf,'compareRandLinesAndCircPNR.fig')

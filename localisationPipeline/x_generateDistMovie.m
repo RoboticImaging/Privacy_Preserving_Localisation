@@ -52,7 +52,7 @@ for i = 1:length(imgIdxs)
     circFeatureStack(:,:,i) = reshape(f,[256,256]);
 end
 
-save('fingerprintsInDset.mat', 'imgStack','lineFeatureStack','circFeatureStack','imgIdxs')
+% save('fingerprintsInDset.mat', 'imgStack','lineFeatureStack','circFeatureStack','imgIdxs')
 
 %% generate vid
 % plotting loop:
@@ -80,7 +80,7 @@ end
 
 % create the video writer with 10 fps
 writerObj = VideoWriter('test.mp4','MPEG-4');
-writerObj.FrameRate = 3;
+writerObj.FrameRate = 15;
 % set the seconds per image
 % open the video writer
 open(writerObj);
