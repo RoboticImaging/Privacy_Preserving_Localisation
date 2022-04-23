@@ -4,7 +4,8 @@ close all;
 wbars = findall(0,'type','figure','tag','TMWWaitbar');
 delete(wbars);
 
-dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
+% dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
+dset = getDset('../data/MyDsets/PNRtopWalkthrough1/imgs');
 
 imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
 
