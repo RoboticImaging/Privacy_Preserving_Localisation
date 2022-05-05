@@ -1,4 +1,12 @@
-function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, nSample)
+function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, nSample, isNormalise)
+    arguments
+        img (:,:) double
+        nLines (1,1) double
+        nSample (1,1) double
+        isNormalise = false
+    end
+
+
     lines = generateRandomLines(size(img), nLines);
 
     img = double(img);
@@ -6,8 +14,13 @@ function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, n
     [xToSample, yToSample] = lines2SamplePoints(lines, nSample); 
     interpVals = interp2(img,xToSample,yToSample);
 
-    features = [max(interpVals,[],2), min(interpVals,[],2)];
-    metrics = [max(interpVals,[],2) - min(interpVals,[],2)];
+    if isNormalise
+        features = [max(interpVals,[],2), min(interpVals,[],2)]/mean(img,"all");
+        metrics = [max(interpVals,[],2) - min(interpVals,[],2)]/mean(img,"all");
+    else
+        features = [max(interpVals,[],2), min(interpVals,[],2)];
+        metrics = [max(interpVals,[],2) - min(interpVals,[],2)];
+    end
 
     if sum(isnan(features),"all") ~= 0
         figure 

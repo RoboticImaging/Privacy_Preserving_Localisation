@@ -4,12 +4,18 @@ close all;
 wbars = findall(0,'type','figure','tag','TMWWaitbar');
 delete(wbars);
 
+VidTime = 30; %s
+
 % dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
-dset = getDset('../data/MyDsets/PNRtopWalkthrough1/imgs');
+dset(1) = getDset('../data/MyDsets/PNRroomSimpsons/imgs');
+dset(2) = getDset('../data/MyDsets/PNRroomSimpsonsRotated/imgs');
+nDset = 2;
 
-imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
+imset{1} = imageDatastore(dset(1).path,'LabelSource','foldernames','IncludeSubfolders',true);
+imset{2} = imageDatastore(dset(2).path,'LabelSource','foldernames','IncludeSubfolders',true);
 
-skip  = 3;
+skip  = 10;
+% skip  = 200;
 nLines = 2e3;
 nCircles = nLines;
 radii = [15,50];
@@ -19,69 +25,83 @@ x1 = x1(:);
 x2 = x2(:);
 xi = [x1 x2];
 
-imgIdxs = 1:skip:length(imageSet.Files);
+imgIdxs = 1:skip:length(imset{1}.Files);
 
-cmap = ["gray"; "default"; "default"];
-yDirs = ["reverse"; "normal"; "normal"];
+cmap = ["gray"; "default"; "default"; "default"];
+yDirs = ["reverse"; "normal"; "normal"; "normal"];
 xlabel = "max";
-ylabel = "min";
-showAxes = [0;1;1];
+% ylabel = "min";
+ylabel = ["";"min, Lines"; "min, Circles"; "min,Circles and Lines"];
+showAxes = repmat([0;1;1;1], [1,2]);
 
 figure(1)
-set(gcf,'Position',[488.0000   63.4000  418.6000  698.6000]);
+set(gcf,'Position',[488.0000   47.4000  540.2000  714.6000]);
 axisParams = {'FontSize',8};
 
 
-imgStack = zeros(dset.imsize(1), dset.imsize(2), length(imgIdxs));
-lineFeatureStack = zeros(256, 256, length(imgIdxs));
-circFeatureStack = zeros(256, 256, length(imgIdxs));
+imgStack = zeros(dset(1).imsize(1), dset(1).imsize(2), length(imgIdxs), nDset);
+lineFeatureStack = zeros(256, 256, length(imgIdxs), nDset);
+circFeatureStack = zeros(256, 256, length(imgIdxs), nDset);
+circLineFeatureStack = zeros(256, 256, length(imgIdxs), nDset);
 
 wbar = waitbar(0,'Loading...');
 
 % data extraction loop:
 for i = 1:length(imgIdxs)
-    waitbar(i/length(imgIdxs), wbar, sprintf("%.2f%% done",100*i/length(imgIdxs)));
-    imgStack(:,:,i) = readimage(imageSet, imgIdxs(i));
+    waitbar((i-1)/length(imgIdxs), wbar, sprintf("%.2f%% done",100*(i-1)/length(imgIdxs)));
+    for colIdx = 1:nDset
+        imgStack(:,:,i,colIdx) = readimage(imset{colIdx}, imgIdxs(i));
+    
+        [features, ~] = maxMinFeaturesAlongUniqueRandLines(imgStack(:,:,i,colIdx), nLines, 100);
+        [f,xi] = ksdensity(features,xi);
+        lineFeatureStack(:,:,i,colIdx) = reshape(f,[256,256]);
+    
+        [xToSample, yToSample] = generateCircleSamplesPts(dset(1).imsize, nCircles, radii, 200);
+        [features, ~] = maxMinFeaturesAlongCurves(imgStack(:,:,i,colIdx), xToSample,yToSample);
+        [f,xi] = ksdensity(features,xi);
+        circFeatureStack(:,:,i,colIdx) = reshape(f,[256,256]);
 
-    [features, ~] = maxMinFeaturesAlongUniqueRandLines(imgStack(:,:,i), nLines, 100);
-    [f,xi] = ksdensity(features,xi);
-    lineFeatureStack(:,:,i) = reshape(f,[256,256]);
 
-    [xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCircles, radii, 200);
-    [features, ~] = maxMinFeaturesAlongCurves(imgStack(:,:,i), xToSample,yToSample);
-    [f,xi] = ksdensity(features,xi);
-    circFeatureStack(:,:,i) = reshape(f,[256,256]);
+        [features, metrics] = maxMinFeaturesUniCircLines(imgStack(:,:,i,colIdx), nCircles, 0.5, radii, 200);
+        [f,xi] = ksdensity(features,xi);
+        circLineFeatureStack(:,:,i,colIdx) = reshape(f,[256,256]);
+
+    end
 end
 
-% save('fingerprintsInDset.mat', 'imgStack','lineFeatureStack','circFeatureStack','imgIdxs')
+save('fingerprintsInDset.mat','lineFeatureStack','circFeatureStack', 'circLineFeatureStack', 'imgIdxs')
 
 %% generate vid
 % plotting loop:
 lineMax = max(lineFeatureStack,[],'all');
 circMax = max(circFeatureStack,[],'all');
+circLineMax = max(circLineFeatureStack,[],'all');
 
 fparam = getATfontParams();
 
 
 for i = 1:length(imgIdxs)
     figure(1)  
-
-    imPltStack{1} = imgStack(:,:,i);
-    imPltStack{2} = lineFeatureStack(:,:,i)/lineMax;
-    imPltStack{3} = circFeatureStack(:,:,i)/circMax;
+    
+    for colIdx = 1:nDset
+        imPltStack{colIdx} = imgStack(:,:,i,colIdx);
+        imPltStack{nDset + colIdx} = lineFeatureStack(:,:,i,colIdx)/lineMax;
+        imPltStack{2*nDset + colIdx} = circFeatureStack(:,:,i,colIdx)/circMax;
+        imPltStack{3*nDset + colIdx} = circLineFeatureStack(:,:,i,colIdx)/circLineMax;
+    end
     clf
-    ATimgrid(imPltStack, [3,1],'showAxes',showAxes,'colormaps',cmap,...
+    ATimgrid(imPltStack, [4, nDset],'showAxes',showAxes,'colormaps',cmap,...
                    'xlabels',xlabel,'ylabels',ylabel,'yDirs',yDirs,'axisParams',axisParams);
-    annotation('textbox', [0.10, 0.95, 0, 0], 'string', sprintf("%d/%d", imgIdxs(i), length(imageSet.Files)), 'HorizontalAlignment','center',...
+    annotation('textbox', [0.10, 0.95, 0, 0], 'string', sprintf("%d/%d", imgIdxs(i), length(imset{1}.Files)), 'HorizontalAlignment','center',...
                       'VerticalAlignment','middle', fparam{:})
     F(i) = getframe(gcf);
     drawnow
 end
 
 
-% create the video writer with 10 fps
-writerObj = VideoWriter('test.mp4','MPEG-4');
-writerObj.FrameRate = 15;
+% create the video writer with 
+writerObj = VideoWriter('roomRotVsNormal.mp4','MPEG-4');
+writerObj.FrameRate = round(length(F)/VidTime);
 % set the seconds per image
 % open the video writer
 open(writerObj);
