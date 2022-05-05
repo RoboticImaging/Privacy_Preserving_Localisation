@@ -3,7 +3,7 @@ clc;
 close all;
 
 vidPath = '../data/MyDsets/Videos/';
-vidName = 'test1';
+vidName = 'PNRroomSimpsons';
 vidFormat = '.mp4';
 
 targetPath = '../data/MyDsets/';

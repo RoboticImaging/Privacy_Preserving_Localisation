@@ -3,6 +3,7 @@ SeqSLAMdatasets
 bagOfWordsTest/MerchData
 *.asv
 pySIFT/__pycache__
+results
 *.png
 *.fig
 *.pdf

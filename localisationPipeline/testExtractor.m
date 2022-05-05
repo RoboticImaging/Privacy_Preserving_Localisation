@@ -9,6 +9,9 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
 
     imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
 
+    trainDset = dset;
+    trainDset.brightnessFact = 1;
+
     trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
     imageSubSet = subset(imageSet,trainIdx);
     
@@ -29,6 +32,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
         for imgIdx = visualiseImageIdxs
             % Define a query image
             queryImage = readimage(imageSet,imgIdx);
+            
             
             figure
             imshow(queryImage)
