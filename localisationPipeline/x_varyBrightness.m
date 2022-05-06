@@ -20,18 +20,20 @@ trainSubsetSkip = 20;
 
 nIter = 2;
 
-brightnessFactors = linspace(0.7,1.3,5);
+brightnessFactors = linspace(0.7,1.3,8);
 
 
 acc = zeros(nIter,length(brightnessFactors));
-for nIdx = 1:length(nLines)
+for nIdx = 1:length(brightnessFactors)
     for i = 1:nIter
+        dstore = ATimds(dset.path, brightnessFactors(nIdx));
         sampleDensity = max(dset.imsize);
-        extractor = @(img) maxMinFeaturesAlongUniqueRandLines(img, nLines(nIdx),sampleDensity);
 
-        acc(i,nIdx) = testExtractor(dset, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+        extractor = @(img) maxMinFeaturesAlongUniqueRandLines(img, nLines,sampleDensity);
+
+        acc(i,nIdx) = testExtractorDstore(dstore, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
     end
 end
-ATerrorbar(nLines, mean(acc), std(acc)/sqrt(nIter));
-
+ATerrorbar(brightnessFactors, mean(acc), std(acc)/sqrt(nIter));
+ATprettify();
 

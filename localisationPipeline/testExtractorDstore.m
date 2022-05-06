@@ -1,4 +1,4 @@
-function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImageIdxs, extractor, isPlotting, isVerbose)
+function acc = testExtractorDstore(dstore, trainingSubsetSkip, numLevels, numBranches, visualiseImageIdxs, extractor, isPlotting, isVerbose)
 
     if nargin == 6
         isPlotting = true;
@@ -7,16 +7,17 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
         isVerbose = true;
     end
 
-    imageSet = imageDatastore(dset.path,'LabelSource','foldernames','IncludeSubfolders',true);
+    imageSet = dstore;
+    imageSet.BF = 1; % reset it to not ruin training
 
-    trainIdx = 1:trainingSubsetSkip:numel(imageSet.Files);
+    trainIdx = 1:trainingSubsetSkip:numel(imageSet.imds.Files);
     imageSubSet = subset(imageSet,trainIdx);
     
     %Pick a random subset of the flower images.
-    trainingSet = splitEachLabel(imageSubSet, 0.9999, 'randomized');
+%     trainingSet = splitEachLabel(imageSubSet, 0.9999, 'randomized');
     
     % Create a custom bag of features using the 'CustomExtractor' option.
-    bag = bagOfFeatures(trainingSet, ...
+    bag = bagOfFeatures(imageSubSet, ...
         'CustomExtractor', extractor, ...
         'TreeProperties', [numLevels numBranches],...
         'Verbose', isVerbose);
@@ -44,7 +45,8 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     end
 
     % seq slam like plots for guessed positon
-    testImageIdxes = 1:4:numel(imageSet.Files);
+    imageSet = dstore; %restore it back to use correct BF
+    testImageIdxes = 1:4:numel(imageSet.imds.Files);
     estimatedIdx = zeros(size(testImageIdxes));
 
     for i = 1:length(testImageIdxes)
