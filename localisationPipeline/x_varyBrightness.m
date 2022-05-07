@@ -5,7 +5,8 @@ close all;
 
 rng(1);
 
-dset = getDset('../data/MyDsets/PNRtopWalkthrough1/imgs');
+% dset = getDset('../data/MyDsets/PNRtopWalkthrough1/imgs');
+dset = getDset('../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb');
 
 
 % BoF params:
@@ -20,20 +21,25 @@ trainSubsetSkip = 20;
 
 nIter = 2;
 
-brightnessFactors = linspace(0.7,1.3,8);
+brightnessFactors = linspace(0.7,1.3,5);
+% brightnessFactors = 1;
 
+sampleDensity = max(dset.imsize);
+extractors = {@(img) maxMinFeaturesAlongUniqueRandCirc(img, nLines, [15,50], sampleDensity, false),...
+                     @(img) maxMinFeaturesAlongUniqueRandCirc(img, nLines, [15,50], sampleDensity, true)};% one for normalise
 
-acc = zeros(nIter,length(brightnessFactors));
-for nIdx = 1:length(brightnessFactors)
-    for i = 1:nIter
-        dstore = ATimds(dset.path, brightnessFactors(nIdx));
-        sampleDensity = max(dset.imsize);
+for etorIdx = 1:length(extractors)
+    extractor = extractors{etorIdx};
+    acc = zeros(nIter,length(brightnessFactors));
+    for nIdx = 1:length(brightnessFactors)
+        for i = 1:nIter
+            dstore = ATimds(dset.path, brightnessFactors(nIdx));
 
-        extractor = @(img) maxMinFeaturesAlongUniqueRandLines(img, nLines,sampleDensity);
-
-        acc(i,nIdx) = testExtractorDstore(dstore, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+    
+            acc(i,nIdx) = testExtractorDstore(dstore, trainSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor, false);
+        end
     end
+    ATerrorbar(brightnessFactors, mean(acc), std(acc)/sqrt(nIter));
 end
-ATerrorbar(brightnessFactors, mean(acc), std(acc)/sqrt(nIter));
 ATprettify();
 

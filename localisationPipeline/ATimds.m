@@ -14,9 +14,9 @@ classdef ATimds
 
         function img = readimage(self, imgIdx)
             img = readimage(self.imds,imgIdx);
-            img = im2double(img);
+%             img = im2double(img);
             img = self.BF*img;
-            img(img > 1) = 1;
+%             img(img > 1) = 1;
         end
 
         function self = subset(self, slices)
@@ -29,6 +29,10 @@ classdef ATimds
 
         function idx = indexImages(self, bag, varargin)
             idx = indexImages(self.imds, bag, varargin{:});
+        end
+
+        function n = numel(self)
+            n = length(self.imds.Files);
         end
     end
 

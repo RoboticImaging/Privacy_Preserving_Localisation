@@ -4,8 +4,9 @@ close all;
 
 
 img = imread('cameraman.tif');
-img = img(:,1:round(end/2));
+img = img(:,1:round(end));
 img=double(img);
+img = img/256;
 
 colormap gray
 imagesc(img)
@@ -17,14 +18,29 @@ axis image
 % lines(1) = x;
 
 rng(3)
-lines = generateRandomLines(size(img), 2);
+lines = generateRandomLines(size(img), 4);
 
 drawLines(lines)
+axis off 
 
 figure
-drawTrace(img, lines(1))
-hold on
+for i = 1:length(lines)
+    hold on
+    [ta,ya] = drawTrace(img, lines(i));
+    t(i,:) = ta;
+    y(i,:) = ya;
+end
 
-drawTrace(img, lines(2))
-xlabel('position along line')
-ylabel('interp intensity')
+for i = 1:length(lines)
+    hold on 
+    [minV,minPos] = min(y(i,:));
+    ATplot(t(i,minPos), minV,'ro');
+    [minV,minPos] = max(y(i,:));
+    ATplot(t(i,minPos), minV,'ro');
+end
+
+param = getATfontParams();
+xlabel('Position along line',param{:})
+ylabel('Interpolated intensity', param{:})
+box on
+ATprettify();

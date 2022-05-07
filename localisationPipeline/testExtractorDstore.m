@@ -40,7 +40,7 @@ function acc = testExtractorDstore(dstore, trainingSubsetSkip, numLevels, numBra
             
             % Display results using montage. 
             figure
-            montage(imageSubSet.Files(imageIDs),'ThumbnailSize',[200 200])
+            montage(imageSubSet.imds.Files(imageIDs),'ThumbnailSize',[200 200])
         end
     end
 
