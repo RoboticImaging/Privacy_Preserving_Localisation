@@ -9,9 +9,9 @@ function drawLines(linesStruct)
         ATplot(coord(:,1), coord(:,2))
         set(gca,'XScale','linear')
     end
-    set(gca,'ColorOrderIndex',1)
+%     set(gca,'ColorOrderIndex',1)
     for lineIdx = 1:length(linesStruct)
-        ATplot(linesStruct(lineIdx).point(1), linesStruct(lineIdx).point(2),'x')
+        ATplot(linesStruct(lineIdx).point(1), linesStruct(lineIdx).point(2),'rx')
     end
 
 end

@@ -46,7 +46,7 @@ function acc = testExtractorDstore(dstore, trainingSubsetSkip, numLevels, numBra
 
     % seq slam like plots for guessed positon
     imageSet = dstore; %restore it back to use correct BF
-    testImageIdxes = 1:4:numel(imageSet.imds.Files);
+    testImageIdxes = 1:3:numel(imageSet.imds.Files);
     estimatedIdx = zeros(size(testImageIdxes));
 
     for i = 1:length(testImageIdxes)

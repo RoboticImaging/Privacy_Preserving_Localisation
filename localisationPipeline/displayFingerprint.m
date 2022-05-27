@@ -4,29 +4,31 @@ function ax = displayFingerprint(imgs, extractors)
         extractors (1,:) cell {}
     end
     
-    nRows = length(extractors) + 1;
-    nCols = length(imgs);
+    nRows = length(imgs);
+    nCols = length(extractors) + 1;
 
     [x1,x2] = meshgrid(0:255, 0:255);
     x1 = x1(:);
     x2 = x2(:);
     xi = [x1 x2];
 
-    imgCell = imgs;
-    for row = 2:(nRows)
+    imgCell = {};
+    for row = 1:(nRows)
         rowCell = {};
-        for col = 1:nCols
-            [features, ~] = extractors{row-1}(imgs{col});
+        for col = 2:nCols
+            [features, ~] = extractors{col-1}(imgs{row});
             [f,xi] = ksdensity(features,xi);
-            rowCell{col} = reshape(f,[256,256]);
+            rowCell{col-1} = reshape(f,[256,256]);
 %             [f,xi] = ksdensity(features);
 %             rowCell{col} = reshape(f,30,[]);
         end
-        imgCell = vertcat(imgCell, rowCell);
+%         tmp = [{imgs{row}}, {rowCell{:}}];
+        imgCell= vertcat(imgCell, [{imgs{row}}, {rowCell{:}}]);
     end
 
-    cmap = ["gray"; repmat("default",nRows-1,1)];
-    yDirs = ["reverse"; repmat("normal",nRows-1,1)];
-    ax = ATimgrid(imgCell, [nRows, nCols], 'colormaps',cmap,'yDirs',yDirs);
+    cmap = ["gray", repmat("default",1,nCols-1)];
+    yDirs = ["reverse", repmat("normal",1,nCols-1)];
+    showAx = [false,repmat(true,1,nCols-1)];
+    ax = ATimgrid(imgCell, [nRows, nCols], 'colormaps',cmap,'yDirs',yDirs,'showAxes',showAx);
 
 end

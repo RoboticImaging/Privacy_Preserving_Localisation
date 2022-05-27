@@ -1,9 +1,10 @@
-function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, nSample, isNormalise)
+function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, nSample, isNormalise, isMetric)
     arguments
         img (:,:) double
         nLines (1,1) double
         nSample (1,1) double
         isNormalise = false
+        isMetric = true
     end
 
 
@@ -20,6 +21,10 @@ function [features, metrics] = maxMinFeaturesAlongUniqueRandLines(img, nLines, n
     else
         features = [max(interpVals,[],2), min(interpVals,[],2)];
         metrics = [max(interpVals,[],2) - min(interpVals,[],2)];
+    end
+
+    if ~isMetric
+        metrics = ones(size(metrics));
     end
 
     if sum(isnan(features),"all") ~= 0
