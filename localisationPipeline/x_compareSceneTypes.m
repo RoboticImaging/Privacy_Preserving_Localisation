@@ -24,7 +24,9 @@ extractors = {@(img) maxMinFeaturesAlongUniqueRandCirc(img,nCirc,radii,sampleDen
                     @(img) maxMinFeaturesAlongUniqueRandLines(img,nCirc,sampleDensity)};
 
 
-ax = displayFingerprint(imgs, extractors);
+% ax = displayFingerprint(imgs, extractors);
+ax = displayFingerprintTranspose(imgs, extractors);
+return
 
 boxesY = [1.507,8.07;
                  0.5,56.29;

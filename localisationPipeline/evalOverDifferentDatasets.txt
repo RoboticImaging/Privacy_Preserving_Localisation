@@ -1,0 +1,14 @@
+PNRroomSimpsons & PNRroomSimpsons & \textbf{55.96} & 49.82 & 45.49 & 55.60\\ 
+----------- new exp ----------dum_cloudy1 & dum_cloudy1 & \textbf{83.66} & 75.16 & 31.05 & 30.72\\ 
+Digiteo_seq_2 & Digiteo_seq_2 & \textbf{92.18} & 93.74 & 91.08 & 91.55\\ 
+PNRroom & PNRroom & \textbf{97.11} & 88.45 & 89.89 & 84.84\\ 
+PNRroom & PNRroomRotated & \textbf{54.51} & 46.93 & 43.68 & 48.38\\ 
+----------- new exp ----------
+SIFT & ORB & Rand Circ & Rand Lines & 
+dum_cloudy1 & dum_cloudy1 & \textbf{83.66} & 75.16 & 31.05 & 30.72\\ 
+Digiteo_seq_2 & Digiteo_seq_2 & \textbf{92.18} & 93.74 & 91.08 & 91.55\\ 
+PNRroom & PNRroom & \textbf{97.11} & 88.45 & 89.89 & 84.84\\ 
+PNRroom & PNRroomRotated & \textbf{54.51} & 46.93 & 43.68 & 48.38\\ 
+----------- new exp ----------
+SIFT & ORB & Rand Circ & Rand Lines & 
+PNRroomRotated & PNRroomRotated & \textbf{87.73} & 92.78 & 94.58 & 94.58\\ 

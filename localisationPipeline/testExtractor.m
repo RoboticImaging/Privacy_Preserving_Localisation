@@ -59,12 +59,16 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
 
     if isPlotting
         figure
-        plot(testImageIdxes, estimatedIdx,'x')
+        plot(testImageIdxes, estimatedIdx,'x','MarkerSize',8)
         hold on
     
-        plot(testImageIdxes, testImageIdxes,'r')
-        xlabel('Test image index')
-        ylabel('Estimated image index')
+        ATplot(testImageIdxes, testImageIdxes,'r')
+        xlabel('Test image index','Interpreter','latex')
+        ylabel('Estimated image index','Interpreter','latex')
+        tmp = ylim;
+        plot(testImageIdxes, testImageIdxes+1.5*trainingSubsetSkip,'k')
+        plot(testImageIdxes, testImageIdxes-1.5*trainingSubsetSkip,'k')
+        ylim(tmp);
     
         figure
         histogram(testImageIdxes- estimatedIdx);

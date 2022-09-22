@@ -10,8 +10,8 @@ function drawLines(linesStruct)
         set(gca,'XScale','linear')
     end
 %     set(gca,'ColorOrderIndex',1)
-    for lineIdx = 1:length(linesStruct)
-        ATplot(linesStruct(lineIdx).point(1), linesStruct(lineIdx).point(2),'rx')
-    end
+%     for lineIdx = 1:length(linesStruct)
+%         ATplot(linesStruct(lineIdx).point(1), linesStruct(lineIdx).point(2),'rx')
+%     end
 
 end

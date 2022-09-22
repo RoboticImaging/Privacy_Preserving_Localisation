@@ -5,8 +5,9 @@ function [acc] = evalExtractor(extractor, trainDset, testDset, BoWparams, nvargs
         extractor % a function that takes in an image and returns a feature vector
         trainDset % struct that includes how many to skip when looking through the dataset
         testDset = []
-        BoWparams = {'TreeProperties', [1 5000], 'Verbose', true} % a cell arr to setup the BoW
-        nvargs.trainAccStride = 5
+        BoWparams = {'TreeProperties', [1 5000], 'Verbose', false} % a cell arr to setup the BoW
+        nvargs.testStride = 3
+        nvargs.accuracyWidth = 1.5 % the width of the box of what counts as accurate
     end
 
     % if no test set given, evalue on the dataset itself
@@ -28,7 +29,7 @@ function [acc] = evalExtractor(extractor, trainDset, testDset, BoWparams, nvargs
         BoWparams{:});
 
     % Create a search index.
-    imgIdx = indexImages(trainSet,bag,'SaveFeatureLocations',false);
+    imgIdx = indexImages(trainSet,bag,'SaveFeatureLocations',false, 'Verbose', false);
 
     % compute training accuracy
 
@@ -38,12 +39,17 @@ function [acc] = evalExtractor(extractor, trainDset, testDset, BoWparams, nvargs
         setToComputePerf = testDset;
     end
 
-    imgToCompute = 1:nvargs.trainAccStride:numel(setToComputePerf.imageSet.Files);
+    imgToCompute = 1:nvargs.testStride:numel(setToComputePerf.imageSet.Files);
     trainEstimatedIdx = zeros(size(imgToCompute));
 
     for i = 1:length(imgToCompute)
         testImage = readimage(setToComputePerf.imageSet,imgToCompute(i));
-        [imageIDs, ~] = retrieveImages(testImage, imgIdx,'NumResults',1);
+        try
+            [imageIDs, ~] = retrieveImages(testImage, imgIdx,'NumResults',1);
+        catch
+            warning('Image features vector empty on image %d', imgToCompute(i))
+            imageIDs = [];
+        end
         if ~isempty(imageIDs)
             trainEstimatedIdx(i)  = trainIdx(imageIDs);
         else 
@@ -52,8 +58,8 @@ function [acc] = evalExtractor(extractor, trainDset, testDset, BoWparams, nvargs
     end
 
 
-    acc = computeAccuracyOverTest(imgToCompute, trainEstimatedIdx,1.5*trainDset.stride);
-    fprintf('Training accuracy of extractor: %.3f\n', 100*acc);
+    acc = computeAccuracyOverTest(imgToCompute, trainEstimatedIdx,nvargs.accuracyWidth*trainDset.stride);
+    fprintf('Training accuracy of extractor: %.3f using accWidth %f\n', 100*acc, nvargs.accuracyWidth);
 end
 
 %     % testing on the other dataset now

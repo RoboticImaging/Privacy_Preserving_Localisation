@@ -30,5 +30,6 @@ function ax = displayFingerprint(imgs, extractors)
     yDirs = ["reverse", repmat("normal",1,nCols-1)];
     showAx = [false,repmat(true,1,nCols-1)];
     ax = ATimgrid(imgCell, [nRows, nCols], 'colormaps',cmap,'yDirs',yDirs,'showAxes',showAx);
+%     ax = ATimgrid(imgCell', [nCols, nRows], 'colormaps',cmap,'yDirs',yDirs,'showAxes',showAx);
 
 end

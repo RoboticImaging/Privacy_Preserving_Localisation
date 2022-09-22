@@ -17,9 +17,9 @@ numBranches = 5000;
 visualiseImagesIndexes = [201, 462,701];
 
 % extractor = @simpleGlobalFeatExtractor;
-% extractor = @siftFeatureExtractor;
+extractor = @siftFeatureExtractor;
 % extractor = @orbBriefExtractor;
-extractor = @featureSPC;
+% extractor = @featureSPC;
 
 % if using random lines:
 % nLines = 1000;
