@@ -9,6 +9,10 @@ We use a modified imds to allow for cleaner dataset managment.
 Need to change line in bagOfFeatures to not check type on input 
 `parser.addRequired('imds', @(x) true);`
 
+## Datasets
+
+Datasets can be found at 
+
 ### Structure
 
 Key folder:
