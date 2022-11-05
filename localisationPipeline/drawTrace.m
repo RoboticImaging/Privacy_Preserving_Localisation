@@ -1,7 +1,16 @@
-function [tvals,interpVals] = drawTrace(img, line)
+function [tvals,interpVals] = drawTrace(img, line, plot)
+    arguments
+        img 
+        line
+        plot = true
+    end 
 
-    [xToSample, yToSample, tvals] = lines2SamplePoints(line, 200);
+
+    [xToSample, yToSample, tvals] = lines2SamplePoints(line, 100);
 
     interpVals = interp2(img,xToSample,yToSample);
-    ATplot(tvals,interpVals)
+    if plot
+        ATplot(tvals,interpVals)
+    end
+
 end

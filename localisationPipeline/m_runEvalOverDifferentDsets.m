@@ -2,18 +2,52 @@ clear;
 clc;
 close all;
 
-dsetFnames = {["../data/MyDsets/PNRroomSimpsonsRotated/imgs"]};
+% dsetFnames = {["../data/MyDsets/PNRroomSimpsonsRotated/imgs"]};
 % dsetFnames = {["../data/dum_cloudy1/png"],
 %               ["../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb"],
 %               ["../data/MyDsets/PNRroomSimpsons/imgs"],
 %               ["../data/MyDsets/PNRroomSimpsons/imgs", "../data/MyDsets/PNRroomSimpsonsRotated/imgs"]};
 
+dsetFnames = {["../data/dum_cloudy1/png"],
+              ["../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb"],
+              ["../data/MyDsets/PNRroomSimpsons/imgs"],
+              ["../data/MyDsets/PNRroomSimpsonsRotated/imgs"]};
 
-dsetNames = {["PNRroomRotated"]};
+
+% dsetFnames = {
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/rot"],
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/trans"],
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/rot_trans"]
+%               };
+
+% dsetFnames = {["../data/dum_cloudy1/png"],
+%               ["../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb"],
+%               ["../data/MyDsets/ABS/norm"],
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/rot"],
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/trans"],
+%               ["../data/MyDsets/ABS/norm", "../data/MyDsets/ABS/rot_trans"]};
+
+dsetNames = {...
+            ["dum_cloudy1"],
+            ["Digiteo_seq_2"],
+            ["PNR"],
+            ["PNRrotated"]
+                };
+
+% dsetNames = {...
+%             ["ABS_norm", "ABS_rot"],
+%             ["ABS_norm", "ABS_trans"],
+%             ["ABS_norm", "rot_trans"]
+%                 };
+
+% dsetNames = {["PNRroomRotated"]};
 % dsetNames = {["dum_cloudy1"],
 %                         ["Digiteo_seq_2"],
 %                         ["PNRroom"],
 %                         ["PNRroom", "PNRroomRotated"]};
+
+
+rng(42)
 
 for tabRow = 1:length(dsetFnames)
     trainDset = getDset(dsetFnames{tabRow}(1));
@@ -25,25 +59,40 @@ for tabRow = 1:length(dsetFnames)
         accuracyWidth = 1.5;
     else
         testDset = getDset(dsetFnames{tabRow}(2));
-        accuracyWidth = 4.5;
+        accuracyWidth = 2.5;
     end
-    testDset.stride = 3;
+    testDset.stride = 1;
 
-    curveFraction = 400; % number of curves as a fraction of the number of pixels
+    curveFraction = 300; % number of curves as a fraction of the number of pixels
 
     minRadiiFrac = 21;
     maxRadiiFrac = 72;
 
-    radii = min(trainDset.imsize)./[minRadiiFrac,maxRadiiFrac];
+%     minRadiiFrac = 2;
+%     maxRadiiFrac = 5;
 
-    nCurves = round(prod(trainDset.imsize)/curveFraction);
-    nSamples = max(trainDset.imsize);
+%     radii = min(trainDset.imsize)./[maxRadiiFrac,minRadiiFrac]
+    radii = [15,50];
 
-    etors = {@siftFeatureExtractor, 
-                  @orbBriefExtractor,
-                  @(img) maxMinFeaturesAlongUniqueRandCirc(img, nCurves, radii, nSamples),
+    nCurves = round(prod(trainDset.imsize)/curveFraction)
+    nSamples = max(trainDset.imsize)
+
+    etors = {...
+        @siftFeatureExtractor,... 
+                  @orbBriefExtractor,...
+                  @(img) maxMinFeaturesAlongUniqueRandCirc(img, nCurves, radii, nSamples),...
                   @(img) maxMinFeaturesAlongUniqueRandLines(img, nCurves, nSamples)};
-    etorNames = ["SIFT", "ORB", "Rand Circ", "Rand Lines"];
+
+%     lines = generateRandomLines(trainDset.imsize, nCurves);
+%     [lineXToSample, lineYToSample] = lines2SamplePoints(lines, nSamples); 
+% 
+%     [circxToSample, circyToSample] = generateCircleSamplesPts(trainDset.imsize, nCurves, radii, nSamples);
+%     etors = {...
+%         @siftFeatureExtractor,... 
+%                   @orbBriefExtractor,...
+%                   @(img) maxMinFeaturesAlongCurves(img, circxToSample,circyToSample),...
+%                   @(img) maxMinFeaturesAlongCurves(img, lineXToSample,lineYToSample)};
+    etorNames = ["SIFT", "ORB", "Circle extrema", "Line extrema"];
 
 
     for etorIdx = 1:length(etors)

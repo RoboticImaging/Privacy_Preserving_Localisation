@@ -44,7 +44,7 @@ function acc = testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, v
     end
 
     % seq slam like plots for guessed positon
-    testImageIdxes = 1:4:numel(imageSet.Files);
+    testImageIdxes = 1:1:numel(imageSet.Files);
     estimatedIdx = zeros(size(testImageIdxes));
 
     for i = 1:length(testImageIdxes)

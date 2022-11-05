@@ -3,21 +3,23 @@ clc;
 close all;
 
 % dsetName = '../data/Digiteo_seq_2/Passive-Stereo/RGB-D/rgb';
-dsetName = '../data/dum_cloudy1/png';
+dsetName = "../data/MyDsets/ABS/norm";
+% dsetName = '../data/dum_cloudy1/png';
 
 dset = getDset(dsetName);
 
 
-trainingSubsetSkip = 30;
+trainingSubsetSkip = 4;
 
 % BoF params:5
 numLevels = 1;
 numBranches = 5000;
 
-visualiseImagesIndexes = [201, 462,701];
+% visualiseImagesIndexes = [201, 462,701];
+visualiseImagesIndexes = [99,20];
 
 % extractor = @simpleGlobalFeatExtractor;
-extractor = @siftFeatureExtractor;
+% extractor = @siftFeatureExtractor;
 % extractor = @orbBriefExtractor;
 % extractor = @featureSPC;
 
@@ -29,11 +31,17 @@ extractor = @siftFeatureExtractor;
 % extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
 
 % using circles
-% nCirc = 100;
-% nSamples = 200;
-% radiusBounds = [40,100];
+% nCirc = 2000;
+% nSamples = 100;
+% radiusBounds = [20,50];
 % [xToSample, yToSample] = generateCircleSamplesPts(dset.imsize, nCirc, radiusBounds, nSamples);
 % extractor = @(img) maxMinFeaturesAlongCurves(img, xToSample,yToSample);
+
+nCurves = 3000;
+nSamples = 1000;
+radii = [20,50];
+extractor = @(img) maxMinFeaturesAlongUniqueRandCirc(img, nCurves, radii, nSamples);
+% extractor = @(img) maxMinFeaturesAlongUniqueRandLines(img, nCurves, nSamples);
 
 testExtractor(dset, trainingSubsetSkip, numLevels, numBranches, visualiseImagesIndexes, extractor);
 
